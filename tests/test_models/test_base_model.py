@@ -114,5 +114,11 @@ class test_basemodel(unittest.TestCase):
         self.base_model.save()
         self.assertNotEqual(prev_updated_at, self.base_model.updated_at)
 
+    def test_id_generation(self):
+        base_model1 = BaseModel()
+        base_model2 = BaseModel()
+        self.assertNotEqual(base_model1.id, base_model2.id)
+
+
 if __name__ == '__main__':
     unittest.main()
