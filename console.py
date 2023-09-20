@@ -125,6 +125,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
+        args = args[1:]
         obj_attrs = {}
         for arg in args:
             parts = arg.split('=')
@@ -134,16 +135,9 @@ class HBNBCommand(cmd.Cmd):
 
             if value.startswith('"') and value.endswith('"'):
                 value = value[1:-1].replace('_', ' ')
-            elif '.' in value:
-                try:
-                    value = float(value)
-                except ValueError:
-                    continue
-            else:
-                try:
-                    value = int(value)
-                except ValueError:
-                    continue
+            
+            if key in HBNBCommand.types:
+                value = HBNBCommand.types[key](value)
 
             obj_attrs[key] = value
 
