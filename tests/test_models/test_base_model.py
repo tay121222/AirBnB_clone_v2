@@ -119,6 +119,21 @@ class test_basemodel(unittest.TestCase):
         base_model2 = BaseModel()
         self.assertNotEqual(base_model1.id, base_model2.id)
 
+    def test_update_method(self):
+        base = BaseModel()
+        base.save()
+
+        base.update({'name': 'new_name', 'age': 30})
+        base.save()
+
+        updated_base = BaseModel.get(base.id)
+        self.assertEqual(updated_base.name, 'new_name')
+        self.assertEqual(updated_base.age, 30)
+
+    def test_repr_method(self):
+        base = BaseModel()
+        expected_repr = "[BaseModel] ({}) {}".format(base.id, base.__dict__)
+        self.assertEqual(repr(base), expected_repr)
 
 if __name__ == '__main__':
     unittest.main()
