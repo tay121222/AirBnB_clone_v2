@@ -135,7 +135,7 @@ class HBNBCommand(cmd.Cmd):
 
             if value.startswith('"') and value.endswith('"'):
                 value = value[1:-1].replace('_', ' ')
-            
+
             if key in HBNBCommand.types:
                 data_type = HBNBCommand.types[key]
                 try:

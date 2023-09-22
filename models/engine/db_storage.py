@@ -11,6 +11,7 @@ from models.place import Place
 from models.review import Review
 from models.amenity import Amenity
 
+
 class DBStorage:
     """hbnb models in a MySQL database"""
     __engine = None
