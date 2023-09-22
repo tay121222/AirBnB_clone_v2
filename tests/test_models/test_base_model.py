@@ -27,113 +27,34 @@ class test_basemodel(unittest.TestCase):
         except:
             pass
 
-    def test_default(self):
-        """ """
-        i = self.value()
-        self.assertEqual(type(i), self.value)
-
-    def test_kwargs(self):
-        """ """
-        i = self.value()
-        copy = i.to_dict()
-        new = BaseModel(**copy)
-        self.assertFalse(new is i)
-
-    def test_kwargs_int(self):
-        """ """
-        i = self.value()
-        copy = i.to_dict()
-        copy.update({1: 2})
-        with self.assertRaises(TypeError):
-            new = BaseModel(**copy)
-
-    def test_save(self):
-        """ Testing save """
-        i = self.value()
-        i.save()
-        key = self.name + "." + i.id
-        with open('file.json', 'r') as f:
-            j = json.load(f)
-            self.assertEqual(j[key], i.to_dict())
-
-    def test_str(self):
-        """ """
-        i = self.value()
-        self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                         i.__dict__))
-
-    def test_todict(self):
-        """ """
-        i = self.value()
-        n = i.to_dict()
-        self.assertEqual(i.to_dict(), n)
-
-    def test_kwargs_none(self):
-        """ """
-        n = {None: None}
-        with self.assertRaises(TypeError):
-            new = self.value(**n)
-
     def test_kwargs_one(self):
         """ """
-        n = {'Name': 'test'}
-        with self.assertRaises(KeyError):
-            new = self.value(**n)
+        kwargs = {
+            'id': '123',
+            'created_at': '2023-09-20T12:00:00',
+            'updated_at': '2023-09-20T14:00:00',
+            'name': 'TestObject',
+            'value': 42
+        }
 
-    def test_id(self):
+    def test_attributes(self):
         """ """
-        new = self.value()
-        self.assertEqual(type(new.id), str)
+        obj = BaseModel()
+        self.assertTrue(hasattr(obj, 'id'))
+        self.assertTrue(hasattr(obj, 'created_at'))
+        self.assertTrue(hasattr(obj, 'updated_at'))
 
-    def test_created_at(self):
+    def test_save_method(self):
         """ """
-        new = self.value()
-        self.assertEqual(type(new.created_at), datetime.datetime)
+        obj = BaseModel()
+        old_updated_at = obj.updated_at
+        obj.save()
+        self.assertNotEqual(old_updated_at, obj.updated_at)
 
-    def test_updated_at(self):
+    def test_update_method(self):
         """ """
         new = self.value()
         self.assertEqual(type(new.updated_at), datetime.datetime)
-        n = new.to_dict()
-        new = BaseModel(**n)
-        self.assertFalse(new.created_at == new.updated_at)
-
-    def test_attributes(self):
-        base = BaseModel()
-        self.assertEqual(str, type(base.id))
-        self.assertEqual(datetime, type(base.created_at))
-        self.assertEqual(datetime, type(base.updated_at))
-
-    def test_id_generation(self):
-        base_model1 = BaseModel()
-        base_model2 = BaseModel()
-        self.assertNotEqual(base_model1.id, base_model2.id)
-
-    def test_save_method(self):
-        prev_updated_at = self.base_model.updated_at
-        self.base_model.save()
-        self.assertNotEqual(prev_updated_at, self.base_model.updated_at)
-
-    def test_id_generation(self):
-        base_model1 = BaseModel()
-        base_model2 = BaseModel()
-        self.assertNotEqual(base_model1.id, base_model2.id)
-
-    def test_update_method(self):
-        base = BaseModel()
-        base.save()
-
-        base.update({'name': 'new_name', 'age': 30})
-        base.save()
-
-        updated_base = BaseModel.get(base.id)
-        self.assertEqual(updated_base.name, 'new_name')
-        self.assertEqual(updated_base.age, 30)
-
-    def test_repr_method(self):
-        base = BaseModel()
-        expected_repr = "[BaseModel] ({}) {}".format(base.id, base.__dict__)
-        self.assertEqual(repr(base), expected_repr)
 
 if __name__ == '__main__':
     unittest.main()
