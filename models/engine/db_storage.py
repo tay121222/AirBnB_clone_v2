@@ -7,6 +7,7 @@ from models.base_model import Base
 from models.state import State
 from models.city import City
 from models.user import User
+from models.place import Place
 
 class DBStorage:
     """hbnb models in a MySQL database"""
@@ -39,7 +40,7 @@ class DBStorage:
         if cls:
             query = session.query(cls).all()
         else:
-            classes = [State, City, User]
+            classes = [State, City, User, Place]
             query = []
             for cls in classes:
                 query.extend(session.query(cls).all())
