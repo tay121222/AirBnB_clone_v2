@@ -15,19 +15,17 @@ def do_deploy(archive_path):
         return False
 
     try:
+        file_name = archive_path.split("/")[-1]
+        base_name = file_name.split(".")[0]
+        path = "/data/web_static/releases/"
         put(archive_path, '/tmp/')
-        archive_filename = archive_path.split('/')[-1].split('.')[0]
-        run('mkdir -p /data/web_static/releases/{}/'.format(archive_filename))
-        run('tar -xzf /tmp/{}.tgz '
-            '-C /data/web_static/releases/{} '
-            '--strip-components=1'.format(
-                archive_filename, archive_filename
-                )
-            )
-        run('rm /tmp/{}.tgz'.format(archive_filename))
-        run('rm -f /data/web_static/current')
-        run('ln -s /data/web_static/releases/{}/ '
-            '/data/web_static/current'.format(archive_filename))
+        run('mkdir -p {}{}/'.format(path, base_name))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(file_name, path, base_name))
+        run('rm /tmp/{}'.format(file_name))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, base_name))
+        run('rm -rf {}{}/web_static'.format(path, base_name))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {}{}/ /data/web_static/current'.format(path, base_name))
         print("New version deployed!")
         return True
     except Exception as e:
