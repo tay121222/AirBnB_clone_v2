@@ -10,10 +10,16 @@ package { 'nginx':
 
 file { '/data/web_static/releases/test':
   ensure => 'directory',
+  owner   => 'root',
+  group   => 'root',
+  mode => '0755',
 }
 
 file { '/data/web_static/shared':
   ensure => 'directory',
+  owner   => 'root',
+  group   => 'root',
+  mode => '0755',
 }
 
 file { '/data/web_static/releases/test/index.html':
@@ -28,6 +34,9 @@ file { '/data/web_static/current':
   ensure => 'link',
   target => '/data/web_static/releases/test',
   force  => true,
+  owner   => 'root',
+  group   => 'root',
+  mode => '0755'
 }
 
 exec { 'change_ownership':
