@@ -1,12 +1,26 @@
 #!/usr/bin/python3
 """Fabric script that distributes an archive to your web servers"""
 
-from fabric.api import env, run, put
+from fabric.api import env, run, put, task
 from os.path import exists
 
 env.hosts = ['100.26.20.143', '100.26.237.112']
 
+@task
+def do_pack():
+    """generates a .tgz archive from the contents of the web_static"""
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    archive_name = 'web_static_{}.tgz'.format(timestamp)
+    archive_path = 'versions/{}'.format(archive_name)
 
+    try:
+        local('mkdir -p versions')
+        local('tar -czvf {} web_static'.format(archive_path))
+        return archive_path
+    except Exception:
+        return None
+
+@task
 def do_deploy(archive_path):
     """script distributes an archive to your web servers"""
     if not exists(archive_path):
