@@ -1,4 +1,10 @@
-class { 'nginx':
+# Redo the task #0 but by using Puppet
+
+exec { 'update_apt':
+  command => '/usr/bin/env apt -y update',
+  path    => '/usr/bin:/bin',
+}
+package { 'nginx':
   ensure => 'installed',
 }
 
