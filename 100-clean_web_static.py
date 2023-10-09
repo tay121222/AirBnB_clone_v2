@@ -57,25 +57,18 @@ def deploy():
 
     return do_deploy(archive_path)
 
+
 def do_clean(number=0):
     """deletes out-of-date archives,"""
-    try:
-        number = int(number)
-        if number < 1:
-            number = 1
+    number = 1 if int(number) == 0 else int(number)
 
-        with cd('/data/web_static/releases'):
-            archives = run('ls -t').split()
+    with cd('/data/web_static/releases'):
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        [archives.pop() for i in range(number)]
+        [run("rm -rf ./{}".format(a)) for a in archives]
 
-        for archive in archives[number:]:
-            run('rm -f {}'.format(archive))
-
-        with cd('/data/web_static'):
-            archives = run('ls -t versions').split()
-
-        for archive in archives[number:]:
-            run('rm -f versions/{}'.format(archive))
-
-        return True
-    except Exception:
-        return False
+    with lcd("versions"):
+        archives = local("ls -tr").split()
+        [archives.pop() for i in range(number)]
+        [local("rm ./{}".format(a)) for a in archives]
