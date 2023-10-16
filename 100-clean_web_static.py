@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Fabric script that distributes an archive to your web servers"""
 
-from fabric.api import env, run, put
+from fabric.api import env, run, put, local, cd
 from os.path import exists
 from datetime import datetime
 
@@ -59,16 +59,14 @@ def deploy():
 
 
 def do_clean(number=0):
-    """deletes out-of-date archives,"""
-    number = 1 if int(number) == 0 else int(number)
+    """deletes out-of-date archives"""
+    number = int(number)
+    if number < 0:
+        return
+    number += 1
 
     with cd('/data/web_static/releases'):
-        archives = run("ls -tr").split()
-        archives = [a for a in archives if "web_static_" in a]
-        [archives.pop() for i in range(number)]
-        [run("rm -rf ./{}".format(a)) for a in archives]
+        run('ls -t | tail -n +{} | xargs rm -rf --'.format(number))
 
-    with lcd("versions"):
-        archives = local("ls -tr").split()
-        [archives.pop() for i in range(number)]
-        [local("rm ./{}".format(a)) for a in archives]
+    with cd('versions'):
+        local('ls -t | tail -n +{} | xargs rm -rf --'.format(number))
