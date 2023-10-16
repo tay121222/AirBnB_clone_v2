@@ -62,8 +62,10 @@ def do_clean(number=0):
     if number < 0:
         return
 
-    number = number + 1
+    number_keep = number + 1
 
-    local('cd versions; ls -t | tail -n +{} | xargs rm -rf'.format(number))
+    with lcd('versions'):
+        local('ls -t | tail -n +{} | xargs rm -rf'.format(number_keep))
     path = '/data/web_static/releases'
-    run('cd {} ; ls -t | tail -n +{} | xargs rm -rf'.format(path, number))
+    with cd(path):
+        run('ls -t | tail -n +{} | xargs rm -rf'.format(number_keep))
