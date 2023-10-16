@@ -6,8 +6,6 @@ from os.path import exists
 from datetime import datetime
 
 env.hosts = ['100.26.20.143', '100.26.237.112']
-env.user = 'ubuntu'
-env.key_filename = '~/.ssh/school'
 
 
 def do_pack():
@@ -63,10 +61,9 @@ def do_clean(number=0):
     number = int(number)
     if number < 0:
         return
-    number += 1
 
-    with cd('/data/web_static/releases'):
-        run('ls -t | tail -n +{} | xargs rm -rf --'.format(number))
+    number = number + 1
 
-    with cd('versions'):
-        local('ls -t | tail -n +{} | xargs rm -rf --'.format(number))
+    local('cd versions; ls -t | tail -n +{} | xargs rm -rf'.format(number))
+    path = '/data/web_static/releases'
+    run('cd {} ; ls -t | tail -n +{} | xargs rm -rf'.format(path, number))
