@@ -59,8 +59,8 @@ def deploy():
 def do_clean(number=0):
     """deletes out-of-date archives"""
     number = int(number)
-    if number < 0:
-        return
+    if number < 2:
+        number = 1
 
     number_keep = number + 1
 
