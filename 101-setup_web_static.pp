@@ -8,18 +8,18 @@ package { 'nginx':
   ensure => 'installed',
 }
 
+exec { 'change_ownership':
+  command     => 'chown -R ubuntu:ubuntu /data/web_static',
+  path        => '/usr/bin:/bin',
+  refreshonly => true,
+}
+
 file { '/data/web_static/releases/test':
   ensure => 'directory',
-  owner   => 'root',
-  group   => 'root',
-  mode => '0755',
 }
 
 file { '/data/web_static/shared':
   ensure => 'directory',
-  owner   => 'root',
-  group   => 'root',
-  mode => '0755',
 }
 
 file { '/data/web_static/releases/test/index.html':
@@ -34,15 +34,19 @@ file { '/data/web_static/current':
   ensure => 'link',
   target => '/data/web_static/releases/test',
   force  => true,
-  owner   => 'root',
-  group   => 'root',
-  mode => '0755'
 }
 
-exec { 'change_ownership':
-  command     => 'chown -R ubuntu:ubuntu /data/web_static',
-  path        => '/usr/bin:/bin',
-  refreshonly => true,
+file { '/var/www/html':
+  ensure => 'directory',
+}
+
+file { '/var/www/html/index.nginx-debian.html':
+  ensure  => 'present',
+  content => '<!DOCTYPE html>
+ <html>
+ <head></head>
+ <body>Holberton School</body>
+ </html>',
 }
 
 file { '/etc/nginx/sites-available/web_static':
@@ -56,7 +60,7 @@ file { '/etc/nginx/sites-available/web_static':
     }
 
     location / {
-        add_header X-Served-By \$hostname;
+        add_header X-Served-By \"\$hostname\";
     }
   }",
 }
