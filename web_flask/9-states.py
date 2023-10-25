@@ -3,6 +3,7 @@
 from models import storage
 from flask import Flask, render_template
 from models.state import State
+from models.city import City
 
 app = Flask(__name__)
 
@@ -19,11 +20,13 @@ def display_states():
 def display_state_cities(id):
     """display Cities in State object if id found"""
     states = storage.all(State)
-    key = "State." + id
-    if key in states:
-        state = states[key]
-        cities_list = sorted(state.cities, key=lambda x: x.name)
-        return render_template('9-states.html', state=state, cities=cities_list, not_found=False)
+    state_cities = []
+    for state in states.values():
+        if state.id == id:
+            state_cities = sorted(state.cities, key=lambda x: x.name)
+            break
+    if state_cities:
+        return render_template('9-states.html', state=state, cities=state_cities)
     else:
         return render_template('9-states.html', not_found=True)
 
