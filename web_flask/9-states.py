@@ -20,13 +20,10 @@ def display_states():
 def display_state_cities(id):
     """display Cities in State object if id found"""
     states = storage.all(State)
-    state_cities = []
-    for state in states.values():
-        if state.id == id:
-            state_cities = sorted(state.cities, key=lambda x: x.name)
-            break
-    if state_cities:
-        return render_template('9-states.html', state=state, cities=state_cities)
+    state = states.get("State." + id, None)
+    if state:
+        cities = sorted(state.cities, key=lambda x: x.name)
+        return render_template('9-states.html', state=state, cities=cities)
     else:
         return render_template('9-states.html', not_found=True)
 
