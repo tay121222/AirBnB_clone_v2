@@ -12,6 +12,8 @@ def display_states():
     """routes cities by state into html fIle"""
     states = storage.all(State)
     states_list = sorted(states.values(), key=lambda x: x.name)
+    for state in states_list:
+        state.cities = sorted(state.cities, key=lambda x: x.name)
     return render_template('8-cities_by_states.html', states=states_list)
 
 
